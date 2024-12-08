@@ -3,6 +3,7 @@ import io
 import os
 from zipfile import ZipFile
 from openpyxl import load_workbook
+from pypdf import PdfReader
 
 current_directory_path = os.path.dirname(__file__)
 resources_directory_path = os.path.join(current_directory_path, "resources")
@@ -47,3 +48,12 @@ def test_xlsx():
             sheet = workbook.active
             assert sheet['A1'].value == "Ячейка А1"
             assert sheet['C10'].value == "Ячейка С10"
+
+
+def test_pdf():
+    with ZipFile(archive_file, 'r') as zfile_pdf:
+        # Открываем pdf-файл внутри архива
+        with zfile_pdf.open("../tmp/ranger.pdf") as pdf_file:
+            reader = PdfReader(pdf_file)
+            assert "Доброго дня господа" in reader.pages[0].extract_text()
+            assert len(reader.pages) == 9
