@@ -1,30 +1,13 @@
 import csv
 import io
-import os
 from zipfile import ZipFile
 from openpyxl import load_workbook
 from pypdf import PdfReader
 
-current_directory_path = os.path.dirname(__file__)
-resources_directory_path = os.path.join(current_directory_path, "resources")
-tmp_directory_path = os.path.join(current_directory_path, "tmp")
-archive_file = os.path.join(resources_directory_path, "archive.zip")
-
-# Создаём архив 'archive.zip' с файлами из каталога 'tmp' и помещаем в каталог 'resources'4
-with ZipFile(archive_file, 'w') as zfile:
-    # Проходим по всем файлам в директории
-    for root, dirs, files in os.walk(tmp_directory_path):
-        for file in files:
-            # Полный путь к файлу
-            file_path = os.path.join(root, file)
-            # # Добавляем файл в архив
-            zfile.write(file_path, os.path.relpath(file_path, resources_directory_path))
-    print(zfile.namelist())
-
 
 # Читаем csv-файл расположенный в архиве и выполняем проверки содержимого
-def test_csv():
-    with ZipFile(archive_file, 'r') as zfile_csv:
+def test_csv(make_zip):
+    with ZipFile("resources/archive.zip", 'r') as zfile_csv:
         # Открываем CSV-файл внутри архива
         with zfile_csv.open("../tmp/test.csv") as csv_file:
             # Создаем объект CSV-ридера
@@ -40,7 +23,7 @@ def test_csv():
 
 # Читаем xlsx-файл расположенный в архиве и выполняем проверки содержимого.
 def test_xlsx():
-    with ZipFile(archive_file, 'r') as zfile_xlsx:
+    with ZipFile("resources/archive.zip", 'r') as zfile_xlsx:
         # Открываем xlsx-файл внутри архива
         with zfile_xlsx.open("../tmp/book.xlsx") as xlsx_file:
             file_content = io.BytesIO(xlsx_file.read())
@@ -51,7 +34,7 @@ def test_xlsx():
 
 
 def test_pdf():
-    with ZipFile(archive_file, 'r') as zfile_pdf:
+    with ZipFile("resources/archive.zip", 'r') as zfile_pdf:
         # Открываем pdf-файл внутри архива
         with zfile_pdf.open("../tmp/ranger.pdf") as pdf_file:
             reader = PdfReader(pdf_file)
