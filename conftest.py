@@ -6,6 +6,8 @@ from zipfile import ZipFile
 @pytest.fixture(scope="session", autouse=True)
 # Создаём архив 'archive.zip' с файлами из каталога 'tmp' и помещаем в каталог 'resources'
 def make_zip():
+    if not os.path.exists("resources"):  # Проверям, если данной папки нет, то создаём её
+        os.mkdir("resources")
     current_directory_path = os.path.dirname(__file__)
     resources_directory_path = os.path.join(current_directory_path, "resources")
     tmp_directory_path = os.path.join(current_directory_path, "tmp")
